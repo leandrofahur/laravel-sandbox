@@ -1,0 +1,34 @@
+version: "3"
+services:
+    # Database
+    mysql:
+        container_name: post_app_db
+        image: mysql:8.0.21
+        command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: laravel
+            MYSQL_DATABASE: development
+        restart: always
+        volumes:
+            - db_data_file:/var/lib/mysql
+        networks:
+            - self_net
+    # phpmyadmin
+    phpmyadmin:
+        depends_on:
+            - mysql
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: mysql
+            MYSQL_ROOT_PASSWORD: laravel
+        networks:
+            - self_net
+networks:
+    self_net:
+volumes:
+    db_data_file:
